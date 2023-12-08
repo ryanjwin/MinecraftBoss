@@ -58,10 +58,10 @@ async def help(ctx):
     help_message = (
         "Here are the available commands:\n"
         "!hello - Greet the bot\n"
-        "!savecoords description, x, y, z - Save coordinates\n"
+        "!savecoords description x y z - Save coordinates\n"
         "!coords - List all coordinates\n"
         "!coords \{query\} - List coordinates matching the description\n"
-        "!help - Display this help message"
+        "!h - Display this help message"
     )
     await ctx.send(help_message)
     return
@@ -82,10 +82,10 @@ async def savecoords(ctx, *args):
         return
     
     # Parse the arguments
-    description = args[0]
-    x = args[1]
-    y = args[2]
-    z = args[3]
+    description = ' '.join(args[:-3])
+    x = args[-3]
+    y = args[-2]
+    z = args[-1]
 
     # Verify that x, y, and z are floats
     try:
@@ -106,7 +106,7 @@ async def savecoords(ctx, *args):
     return
 
 @bot.command(name='coords')
-async def coords(ctx, query):
+async def coords(ctx, query = None):
     """
     Command to list coordinates.
 
@@ -138,6 +138,24 @@ async def coords(ctx, query):
     # Return the query.
     coords_list = '\n'.join(f"{coord[1]}: X={coord[2]}, Y={coord[3]}, Z={coord[4]}" for coord in filtered_coords)
     await ctx.send(f'List of coordinates matching the description "{query}":\n{coords_list}')
+    return
+
+@bot.command(name='remove')
+async def remove(ctx, *, query):
+    """
+    Command to remove coordinates.
+
+    Parameters:
+    - ctx (Context): The context of the command.
+    - query (str): Query to identify coordinates for removal.
+
+    This function removes coordinates based on the provided exact query.
+    """
+    # Remove coordinates from the database with an exact match
+    cursor.execute('DELETE FROM coordinates WHERE description = ?', (query))
+    conn.commit()
+
+    await ctx.send(f'Coordinates with the exact description "{query}" have been removed.')
     return
 
 if __name__ == '__main__':
