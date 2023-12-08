@@ -43,7 +43,7 @@ async def hello(ctx):
     """
     await ctx.send(f'Hello to you too! {ctx.author.mention}')
 
-@bot.command(name='help')
+@bot.command(name='h')
 async def help(ctx):
     """
     Command to display help information.
