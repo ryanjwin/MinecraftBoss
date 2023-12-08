@@ -30,6 +30,7 @@ async def on_ready():
     This function prints a message to the console indicating that the bot has logged in.
     """
     print(f'We have logged in as {bot.user.name}')
+    return
 
 @bot.command(name='hello')
 async def hello(ctx):
@@ -42,6 +43,7 @@ async def hello(ctx):
     This function sends a greeting message mentioning the user who invoked the command.
     """
     await ctx.send(f'Hello to you too! {ctx.author.mention}')
+    return
 
 @bot.command(name='h')
 async def help(ctx):
@@ -62,6 +64,7 @@ async def help(ctx):
         "!help - Display this help message"
     )
     await ctx.send(help_message)
+    return
 
 @bot.command(name='savecoords')
 async def savecoords(ctx, *args):
@@ -100,6 +103,7 @@ async def savecoords(ctx, *args):
     conn.commit()
 
     await ctx.send(f'Coordinates saved: [Description: {description}, X: {x}, Y: {y}, Z: {z}]')
+    return
 
 @bot.command(name='coords')
 async def coords(ctx, query):
