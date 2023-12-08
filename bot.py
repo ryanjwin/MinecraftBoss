@@ -78,7 +78,7 @@ async def help(ctx):
     return
 
 @bot.hybrid_command(name='savecoords')
-async def savecoords(ctx, *, args: CoordFlags):
+async def savecoords(ctx, args: CoordFlags):
     """
     Save coordinates to the database.
 
