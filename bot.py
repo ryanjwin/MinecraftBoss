@@ -26,11 +26,9 @@ bot = commands.Bot(command_prefix='!')
 async def on_ready():
     print(f'We have logged in as {bot.user.name}')
 
-    if bot.guilds:
-        # Find the first text channel the bot has access to in the guild
-        if bot.guilds[0].text_channels:
-            text_channel = bot.guilds[0].text_channels[0]
-            await text_channel.send('Hello everyone!')
+@bot.command(name='hello')
+async def hello(ctx):
+    await ctx.send(f'Hello to you too! {ctx.author.mention}')
 
 
 if __name__ == '__main__':
