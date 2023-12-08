@@ -61,6 +61,7 @@ async def help(ctx):
         "!savecoords description x y z - Save coordinates\n"
         "!coords - List all coordinates\n"
         "!coords \{query\} - List coordinates matching the description\n"
+        "!removecoords \{query\} - Remove coordinates matching the description\n"
         "!h - Display this help message"
     )
     await ctx.send(help_message)
@@ -78,7 +79,7 @@ async def savecoords(ctx, *args):
     - z (float): Z-coordinate.
     """
     if not args or len(args) < 4:
-        await ctx.send('Please provide the description, x, y, and z coordinates. \n!help for more info')
+        await ctx.send('Please provide the description, x, y, and z coordinates. \n!h for more info')
         return
     
     # Parse the arguments
@@ -93,7 +94,7 @@ async def savecoords(ctx, *args):
         y = float(y)
         z = float(z)
     except ValueError:
-        await ctx.send('Invalid coordinates. Please ensure that x, y, and z are valid numbers. No commas! \n!help for more info')
+        await ctx.send('Invalid coordinates. Please ensure that x, y, and z are valid numbers. No commas! \n!h for more info')
         return
 
     # insert into database
@@ -140,7 +141,7 @@ async def coords(ctx, *, query = None):
     await ctx.send(f'List of coordinates matching the description "{query}":\n{coords_list}')
     return
 
-@bot.command(name='remove')
+@bot.command(name='removecoords')
 async def remove(ctx, *, query):
     """
     Command to remove coordinates.
