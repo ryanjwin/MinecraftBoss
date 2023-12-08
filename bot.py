@@ -106,7 +106,7 @@ async def savecoords(ctx, *args):
     return
 
 @bot.command(name='coords')
-async def coords(ctx, query = None):
+async def coords(ctx, *, query = None):
     """
     Command to list coordinates.
 
@@ -152,7 +152,7 @@ async def remove(ctx, *, query):
     This function removes coordinates based on the provided exact query.
     """
     # Remove coordinates from the database with an exact match
-    cursor.execute('DELETE FROM coordinates WHERE description = ?', (query))
+    cursor.execute('DELETE FROM coordinates WHERE description = ?', (query,))
     conn.commit()
 
     await ctx.send(f'Coordinates with the exact description "{query}" have been removed.')
