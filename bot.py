@@ -25,6 +25,12 @@ intents.messages = True
 
 bot = commands.Bot(command_prefix='!', intents=intents)
 
+class CoordFlags(commands.FlagConverter):
+    description: str = commands.flag(description='Description of the coordinates')
+    x: float = commands.flag(description='X position of the coordinates')
+    y: float = commands.flag(description='Y position of the coordinates')
+    z: float = commands.flag(description='Z position of the coordinates')
+
 @bot.event
 async def on_ready():
     """
@@ -71,7 +77,7 @@ async def help(ctx):
     return
 
 @bot.hybrid_command(name='savecoords')
-async def savecoords(ctx, *args):
+async def savecoords(ctx, *, args: CoordFlags):
     """
     Save coordinates to the database.
 
@@ -86,10 +92,10 @@ async def savecoords(ctx, *args):
         return
     
     # Parse the arguments
-    description = ' '.join(args[:-3])
-    x = args[-3]
-    y = args[-2]
-    z = args[-1]
+    description = args.description
+    x = args.x
+    y = args.y
+    z = args.z
 
     # Verify that x, y, and z are floats
     try:
@@ -100,7 +106,6 @@ async def savecoords(ctx, *args):
         await ctx.send('Invalid coordinates. Please ensure that x, y, and z are valid numbers. No commas! \n!h for more info')
         return
 
-    # insert into database
     # Insert into the database
     cursor.execute('INSERT INTO coordinates (description, x, y, z) VALUES (?, ?, ?, ?)',
                    (description, x, y, z))
