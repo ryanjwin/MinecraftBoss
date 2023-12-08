@@ -77,7 +77,7 @@ async def help(ctx):
     await ctx.send(help_message)
     return
 
-@bot.slash_command(name='savecoords')
+@bot.hybrid_command(name='savecoords')
 async def savecoords(ctx, *, args: CoordFlags):
     """
     Save coordinates to the database.
