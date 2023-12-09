@@ -35,21 +35,22 @@ async def on_ready():
     print(f'We have logged in as {bot.user.name}')
     return
 
-@bot.hybrid_command(name='hello')
-async def hello(ctx):
+@bot.tree.command(name='hello')
+async def hello(interaction: discord.Interaction):
     """
-    Command to greet the bot.
+    Say hello!
 
     Parameters:
     - ctx (Context): The context of the command.
 
     This function sends a greeting message mentioning the user who invoked the command.
     """
-    await ctx.send(f'Hello to you too! {ctx.author.mention}')
+    await interaction.response.send_message.send(f'Hello to you too!', 
+                                                 ephemeral=True)
     return
 
-@bot.hybrid_command(name='h')
-async def help(ctx):
+@bot.tree.command(name='h')
+async def help(interaction: discord.Interaction):
     """
     Command to display help information.
 
@@ -67,13 +68,13 @@ async def help(ctx):
         "!removecoords \{query\} - Remove coordinates matching the description\n"
         "!h - Display this help message"
     )
-    await ctx.send(help_message)
+    await interaction.response.send_message.send(help_message, ephemeral=True)
     return
 
 @bot.tree.command(name='savecoords')
 async def savecoords(interaction: discord.Interaction, description: str, x: float, y: float, z: float):
     """
-    Save coordinates to the database.
+    Save coordinates to the database. Include the description and the coordinates.
 
     Parameters:
     - description (str): Description of the coordinates.
@@ -102,21 +103,23 @@ async def savecoords(interaction: discord.Interaction, description: str, x: floa
 
     # insert into database
     # Insert into the database
-    cursor.execute('INSERT INTO coordinates (description, x, y, z) VALUES (?, ?, ?, ?)',
+    try:
+        cursor.execute('INSERT INTO coordinates (description, x, y, z) VALUES (?, ?, ?, ?)',
                    (description, x, y, z))
-    conn.commit()
-
+        conn.commit()
+    except Exception as e:
+        await interaction.response.send_message(f'Invalid coordinates. Please ensure that x, y, and z are valid numbers. No commas! \n/h for more info',
+                                            ephemeral=True)
     await interaction.response.send_message(f'Coordinates saved: [Description: {description}, X: {x}, Y: {y}, Z: {z}]',
                                             ephemeral=True)
     return
 
-@bot.hybrid_command(name='coords')
-async def coords(ctx, *, query = None):
+@bot.tree.command(name='coords')
+async def coords(interaction: discord.Interactions, *, query = None):
     """
-    Command to list coordinates.
+    Command to list coordinates stored in the database. Can optionally use a query for specific coordinates.
 
     Parameters:
-    - ctx (Context): The context of the command.
     - query (str): Optional query to filter coordinates by description.
 
     This function lists all coordinates or filters coordinates based on the provided query.
@@ -127,26 +130,26 @@ async def coords(ctx, *, query = None):
         all_coords = cursor.fetchall()
         # If there are no coordinates in the database.
         if not all_coords:
-            await ctx.send('No coordinates found.')
+            await interaction.response.send_messag('No coordinates found.')
             return
         # All coordinates.
         coords_list = '\n'.join(f"{coord[1]}: X={coord[2]}, Y={coord[3]}, Z={coord[4]}" for coord in all_coords)
-        await ctx.send(f'List of coordinates:\n{coords_list}')
+        await interaction.response.send_message.send(f'List of coordinates:\n{coords_list}', ephemeral=True)
         return
     # There is a query.
     cursor.execute('SELECT * FROM coordinates WHERE description LIKE ?', ('%' + query + '%',))
     filtered_coords = cursor.fetchall()
     # Nothing found from the query.
     if not filtered_coords:
-        await ctx.send(f'No coordinates found matching the description: {query}')
+        await interaction.response.send_message.send(f'No coordinates found matching the description: {query}', ephemeral=True)
         return
     # Return the query.
     coords_list = '\n'.join(f"{coord[1]}: X={coord[2]}, Y={coord[3]}, Z={coord[4]}" for coord in filtered_coords)
-    await ctx.send(f'List of coordinates matching the description "{query}":\n{coords_list}')
+    await interaction.response.send_message.send(f'List of coordinates matching the description "{query}":\n{coords_list}', ephemeral=True)
     return
 
-@bot.hybrid_command(name='removecoords')
-async def remove(ctx, *, query):
+@bot.tree.command(name='removecoords')
+async def remove(interaction: discord.Interaction, *, query):
     """
     Command to remove coordinates.
 
@@ -160,7 +163,7 @@ async def remove(ctx, *, query):
     cursor.execute('DELETE FROM coordinates WHERE description = ?', (query,))
     conn.commit()
 
-    await ctx.send(f'Coordinates with the exact description "{query}" have been removed.')
+    await interaction.response.send_message.send(f'Coordinates with the exact description "{query}" have been removed.', ephemeral=True)
     return
 
 if __name__ == '__main__':
