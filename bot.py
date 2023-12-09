@@ -2,7 +2,6 @@ import discord
 import os
 from dotenv import load_dotenv
 from discord.ext import commands
-from discord import app_commands
 import sqlite3
 
 # Connect to SQLite database
@@ -10,18 +9,18 @@ conn = sqlite3.connect('coordinates.db')
 cursor = conn.cursor()
 
 # Create a table to store coordinates if it doesn't exist
-
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS coordinates (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        description TEXT,
+        x REAL,
+        y REAL,
+        z REAL
+    )
+''')
 conn.commit()
 
-intents = discord.Intents.default()
-intents.message_content = True
-bot = commands.Bot(command_prefix='!', intents=intents)
-
-class CoordFlags(commands.FlagConverter):
-    description: str = commands.flag(description='Description of the coordinates')
-    x: float = commands.flag(description='X position of the coordinates')
-    y: float = commands.flag(description='Y position of the coordinates')
-    z: float = commands.flag(description='Z position of the coordinates')
+bot = commands.Bot(command_prefix='!')
 
 @bot.event
 async def on_ready():
@@ -31,14 +30,9 @@ async def on_ready():
     This function prints a message to the console indicating that the bot has logged in.
     """
     print(f'We have logged in as {bot.user.name}')
-    try:
-        await bot.tree.sync()
-        print('Synced commands!')
-    except Exception as e:
-        print(e)
     return
 
-@bot.hybrid_command(name='hello')
+@bot.command(name='hello')
 async def hello(ctx):
     """
     Command to greet the bot.
@@ -51,7 +45,7 @@ async def hello(ctx):
     await ctx.send(f'Hello to you too! {ctx.author.mention}')
     return
 
-@bot.hybrid_command(name='h')
+@bot.command(name='h')
 async def help(ctx):
     """
     Command to display help information.
@@ -73,8 +67,8 @@ async def help(ctx):
     await ctx.send(help_message)
     return
 
-@bot.hybrid_command(name='savecoords')
-async def savecoords(ctx, *, args):
+@bot.command(name='savecoords')
+async def savecoords(ctx, *args):
     """
     Save coordinates to the database.
 
@@ -84,13 +78,12 @@ async def savecoords(ctx, *, args):
     - y (float): Y-coordinate.
     - z (float): Z-coordinate.
     """
-    args = args.split(' ')
     if not args or len(args) < 4:
         await ctx.send('Please provide the description, x, y, and z coordinates. \n!h for more info')
         return
     
     # Parse the arguments
-    description = args[:-3]
+    description = ' '.join(args[:-3])
     x = args[-3]
     y = args[-2]
     z = args[-1]
@@ -104,6 +97,7 @@ async def savecoords(ctx, *, args):
         await ctx.send('Invalid coordinates. Please ensure that x, y, and z are valid numbers. No commas! \n!h for more info')
         return
 
+    # insert into database
     # Insert into the database
     cursor.execute('INSERT INTO coordinates (description, x, y, z) VALUES (?, ?, ?, ?)',
                    (description, x, y, z))
@@ -112,7 +106,7 @@ async def savecoords(ctx, *, args):
     await ctx.send(f'Coordinates saved: [Description: {description}, X: {x}, Y: {y}, Z: {z}]')
     return
 
-@bot.hybrid_command(name='coords')
+@bot.command(name='coords')
 async def coords(ctx, *, query = None):
     """
     Command to list coordinates.
@@ -147,7 +141,7 @@ async def coords(ctx, *, query = None):
     await ctx.send(f'List of coordinates matching the description "{query}":\n{coords_list}')
     return
 
-@bot.hybrid_command(name='removecoords')
+@bot.command(name='removecoords')
 async def remove(ctx, *, query):
     """
     Command to remove coordinates.
