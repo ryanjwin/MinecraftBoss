@@ -70,7 +70,7 @@ async def help(ctx):
     await ctx.send(help_message)
     return
 
-@bot.bot.tree.command(name='savecoords')
+@bot.tree.command(name='savecoords')
 async def savecoords(interaction: discord.Interaction, description: str, x: float, y: float, z: float):
     """
     Save coordinates to the database.
