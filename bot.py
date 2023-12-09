@@ -115,7 +115,7 @@ async def savecoords(interaction: discord.Interaction, description: str, x: floa
     return
 
 @bot.tree.command(name='coords')
-async def coords(interaction: discord.Interactions, *, query = None):
+async def coords(interaction: discord.Interaction, *, query = None):
     """
     Command to list coordinates stored in the database. Can optionally use a query for specific coordinates.
 
