@@ -81,11 +81,11 @@ async def savecoords(ctx, description: str, x: float, y: float, z: float):
     - y (float): Y-coordinate.
     - z (float): Z-coordinate.
     """
-    if not args or len(args) < 4:
-        await ctx.send('Please provide the description, x, y, and z coordinates. \n!h for more info')
-        return
+    # if not args or len(args) < 4:
+    #     await ctx.send('Please provide the description, x, y, and z coordinates. \n!h for more info')
+    #     return
     
-    # # Parse the arguments
+    # # # Parse the arguments
     # description = ' '.join(args[:-3])
     # x = args[-3]
     # y = args[-2]
