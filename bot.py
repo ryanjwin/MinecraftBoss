@@ -31,10 +31,11 @@ async def on_ready():
 
     This function prints a message to the console indicating that the bot has logged in.
     """
+    await bot.tree.sync()
     print(f'We have logged in as {bot.user.name}')
     return
 
-@bot.command(name='hello')
+@bot.hybrid_command(name='hello')
 async def hello(ctx):
     """
     Command to greet the bot.
