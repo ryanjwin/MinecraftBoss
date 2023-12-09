@@ -2,6 +2,7 @@ import discord
 import os
 from dotenv import load_dotenv
 from discord.ext import commands
+from discord import app_commands
 import sqlite3
 
 # Connect to SQLite database
@@ -20,11 +21,7 @@ cursor.execute('''
 ''')
 conn.commit()
 
-intents = discord.Intents.default()
-intents.messages = True
-intents.message_content = True
-
-bot = commands.Bot(command_prefix='!', intents=intents)
+bot = commands.Bot(command_prefix='!', intents=discord.Intents.all())
 
 class CoordFlags(commands.FlagConverter):
     description: str = commands.flag(description='Description of the coordinates')
@@ -40,9 +37,14 @@ async def on_ready():
     This function prints a message to the console indicating that the bot has logged in.
     """
     print(f'We have logged in as {bot.user.name}')
+    try:
+        await bot.tree.sync()
+        print('Synced commands!')
+    except Exception as e:
+        print(e)
     return
 
-@bot.hybrid_command(name='hello')
+@bot.tree_command(name='hello')
 async def hello(ctx):
     """
     Command to greet the bot.
@@ -55,7 +57,7 @@ async def hello(ctx):
     await ctx.send(f'Hello to you too! {ctx.author.mention}')
     return
 
-@bot.hybrid_command(name='h')
+@bot.tree_command(name='h')
 async def help(ctx):
     """
     Command to display help information.
@@ -77,7 +79,7 @@ async def help(ctx):
     await ctx.send(help_message)
     return
 
-@bot.hybrid_command(name='savecoords')
+@bot.tree_command(name='savecoords')
 async def savecoords(ctx, *, args: CoordFlags):
     """
     Save coordinates to the database.
@@ -115,7 +117,7 @@ async def savecoords(ctx, *, args: CoordFlags):
     await ctx.send(f'Coordinates saved: [Description: {description}, X: {x}, Y: {y}, Z: {z}]')
     return
 
-@bot.hybrid_command(name='coords')
+@bot.tree_command(name='coords')
 async def coords(ctx, *, query = None):
     """
     Command to list coordinates.
@@ -150,7 +152,7 @@ async def coords(ctx, *, query = None):
     await ctx.send(f'List of coordinates matching the description "{query}":\n{coords_list}')
     return
 
-@bot.hybrid_command(name='removecoords')
+@bot.tree_command(name='removecoords')
 async def remove(ctx, *, query):
     """
     Command to remove coordinates.
