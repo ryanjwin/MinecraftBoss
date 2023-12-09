@@ -40,9 +40,6 @@ async def hello(interaction: discord.Interaction):
     """
     Say hello!
 
-    Parameters:
-    - ctx (Context): The context of the command.
-
     This function sends a greeting message mentioning the user who invoked the command.
     """
     await interaction.response.send_message.send(f'Hello to you too!', 
@@ -53,9 +50,6 @@ async def hello(interaction: discord.Interaction):
 async def help(interaction: discord.Interaction):
     """
     Command to display help information.
-
-    Parameters:
-    - ctx (Context): The context of the command.
 
     This function sends a message containing information about available commands.
     """
@@ -115,7 +109,7 @@ async def savecoords(interaction: discord.Interaction, description: str, x: floa
     return
 
 @bot.tree.command(name='coords')
-async def coords(interaction: discord.Interaction, *, query = None):
+async def coords(interaction: discord.Interaction, *, query: str = None):
     """
     Command to list coordinates stored in the database. Can optionally use a query for specific coordinates.
 
@@ -149,12 +143,11 @@ async def coords(interaction: discord.Interaction, *, query = None):
     return
 
 @bot.tree.command(name='removecoords')
-async def remove(interaction: discord.Interaction, *, query):
+async def remove(interaction: discord.Interaction, *, query: str):
     """
-    Command to remove coordinates.
+    Command to remove coordinates. Must match an exact phrase.
 
     Parameters:
-    - ctx (Context): The context of the command.
     - query (str): Query to identify coordinates for removal.
 
     This function removes coordinates based on the provided exact query.
