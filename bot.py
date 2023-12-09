@@ -70,8 +70,8 @@ async def help(ctx):
     await ctx.send(help_message)
     return
 
-@bot.hybrid_command(name='savecoords')
-async def savecoords(ctx, description: str, x: float, y: float, z: float):
+@bot.bot.tree.command(name='savecoords')
+async def savecoords(interaction: discord.Interaction, description: str, x: float, y: float, z: float):
     """
     Save coordinates to the database.
 
@@ -106,7 +106,8 @@ async def savecoords(ctx, description: str, x: float, y: float, z: float):
                    (description, x, y, z))
     conn.commit()
 
-    await ctx.send(f'Coordinates saved: [Description: {description}, X: {x}, Y: {y}, Z: {z}]')
+    await interaction.response.send_message(f'Coordinates saved: [Description: {description}, X: {x}, Y: {y}, Z: {z}]',
+                                            ephemeral=True)
     return
 
 @bot.hybrid_command(name='coords')
