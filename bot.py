@@ -71,7 +71,7 @@ async def help(ctx):
     return
 
 @bot.command(name='savecoords')
-async def savecoords(ctx, *args):
+async def savecoords(ctx, description: str, x: float, y: float, z: float):
     """
     Save coordinates to the database.
 
@@ -85,20 +85,20 @@ async def savecoords(ctx, *args):
         await ctx.send('Please provide the description, x, y, and z coordinates. \n!h for more info')
         return
     
-    # Parse the arguments
-    description = ' '.join(args[:-3])
-    x = args[-3]
-    y = args[-2]
-    z = args[-1]
+    # # Parse the arguments
+    # description = ' '.join(args[:-3])
+    # x = args[-3]
+    # y = args[-2]
+    # z = args[-1]
 
-    # Verify that x, y, and z are floats
-    try:
-        x = float(x)
-        y = float(y)
-        z = float(z)
-    except ValueError:
-        await ctx.send('Invalid coordinates. Please ensure that x, y, and z are valid numbers. No commas! \n!h for more info')
-        return
+    # # Verify that x, y, and z are floats
+    # try:
+    #     x = float(x)
+    #     y = float(y)
+    #     z = float(z)
+    # except ValueError:
+    #     await ctx.send('Invalid coordinates. Please ensure that x, y, and z are valid numbers. No commas! \n!h for more info')
+    #     return
 
     # insert into database
     # Insert into the database
