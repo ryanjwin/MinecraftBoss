@@ -44,7 +44,7 @@ async def on_ready():
         print(e)
     return
 
-@bot.tree_command(name='hello')
+@bot.hybrid_command(name='hello')
 async def hello(ctx):
     """
     Command to greet the bot.
@@ -57,7 +57,7 @@ async def hello(ctx):
     await ctx.send(f'Hello to you too! {ctx.author.mention}')
     return
 
-@bot.tree_command(name='h')
+@bot.hybrid_command(name='h')
 async def help(ctx):
     """
     Command to display help information.
@@ -79,7 +79,7 @@ async def help(ctx):
     await ctx.send(help_message)
     return
 
-@bot.tree_command(name='savecoords')
+@bot.hybrid_command(name='savecoords')
 async def savecoords(ctx, *, args: CoordFlags):
     """
     Save coordinates to the database.
@@ -117,7 +117,7 @@ async def savecoords(ctx, *, args: CoordFlags):
     await ctx.send(f'Coordinates saved: [Description: {description}, X: {x}, Y: {y}, Z: {z}]')
     return
 
-@bot.tree_command(name='coords')
+@bot.hybrid_command(name='coords')
 async def coords(ctx, *, query = None):
     """
     Command to list coordinates.
@@ -152,7 +152,7 @@ async def coords(ctx, *, query = None):
     await ctx.send(f'List of coordinates matching the description "{query}":\n{coords_list}')
     return
 
-@bot.tree_command(name='removecoords')
+@bot.hybrid_command(name='removecoords')
 async def remove(ctx, *, query):
     """
     Command to remove coordinates.
