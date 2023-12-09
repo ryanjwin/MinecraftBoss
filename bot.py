@@ -10,15 +10,7 @@ conn = sqlite3.connect('coordinates.db')
 cursor = conn.cursor()
 
 # Create a table to store coordinates if it doesn't exist
-cursor.execute('''
-    CREATE TABLE IF NOT EXISTS coordinates (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        description TEXT,
-        x REAL,
-        y REAL,
-        z REAL
-    )
-''')
+
 conn.commit()
 
 intents = discord.Intents.default()
@@ -82,7 +74,7 @@ async def help(ctx):
     return
 
 @bot.hybrid_command(name='savecoords')
-async def savecoords(ctx, *, args: CoordFlags):
+async def savecoords(ctx, *, args):
     """
     Save coordinates to the database.
 
@@ -92,15 +84,16 @@ async def savecoords(ctx, *, args: CoordFlags):
     - y (float): Y-coordinate.
     - z (float): Z-coordinate.
     """
+    args = args.split(' ')
     if not args or len(args) < 4:
         await ctx.send('Please provide the description, x, y, and z coordinates. \n!h for more info')
         return
     
     # Parse the arguments
-    description = args.description
-    x = args.x
-    y = args.y
-    z = args.z
+    description = args[:-3]
+    x = args[-3]
+    y = args[-2]
+    z = args[-1]
 
     # Verify that x, y, and z are floats
     try:
