@@ -21,7 +21,10 @@ cursor.execute('''
 ''')
 conn.commit()
 
-bot = commands.Bot(command_prefix='!', intents=discord.Intents.all())
+intents = discord.Intents.default()
+intents.message_content = True
+intents.members = True
+bot = commands.Bot(command_prefix='!', intents=intents)
 
 class CoordFlags(commands.FlagConverter):
     description: str = commands.flag(description='Description of the coordinates')
